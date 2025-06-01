@@ -1,6 +1,7 @@
 # Google Cloud ( Gemini ) flash-image
 
 
+
 ### setup
 * ```bash
     chmod +x build
@@ -11,6 +12,8 @@
 * ```bash
     ./gemCLI
     ```
+### note 
+if you don't have an API KEY, you can create an API [here](https://aistudio.google.com/apikey).
 
 ## RUN
 * example
