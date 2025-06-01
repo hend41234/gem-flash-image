@@ -1,0 +1,1 @@
+ go build -tags netgo -ldflags '-X main.mode=setup' -buildvcs=false -o gemCLI
