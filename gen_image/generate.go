@@ -16,7 +16,6 @@ import (
 )
 
 var Promt string = ""
-var OutPut string = ""
 
 func InputPromts() {
 	scanner := bufio.NewScanner(os.Stdin)
@@ -29,22 +28,31 @@ func InputPromts() {
 			continue
 		}
 		Promt = input
-		// tag = Tags{Tag: strings.Split(input, ",")} //strings.Split(input, ",")
 		break
 	}
 }
 
-func GenerateImage() (dataResponse models.ResGenImageModel) {
+// to generate image, you must have the API KEY
+//
+// if you have the env file, you can use the utils.LoadConfig(envPath)
+//
+// or you can using parameter apiKey.
+func GenerateImage(apiKey ...string) (dataResponse models.ResGenImageModel) {
+	utils.Utils.BaseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent"
+	if len(apiKey) > 0 {
+		utils.Utils.GeminiApiKey = apiKey[0]
+	}
+	if utils.Utils.GeminiApiKey == "" {
+		log.Fatal("config is not valid, please check your config\nnote: if you not inputed the parameter apiKey in genimage.GenerateImage(), you need to use utils.LoadConfig(envPath)")
+	}
+
 	//  try request
 	if Promt == "" {
-		// InputPromts()
 		log.Fatal("error: genimage.Promt is require")
 	}
 	part := models.Part{Text: Promt}
 	content := models.Content{Parts: []models.Part{part}}
-	//
 	genConf := models.GenConfig{ResponseModalities: []string{"TEXT", "IMAGE"}}
-	//
 	body := models.ReqGenImageModel{
 		Contents:         []models.Content{content},
 		GenerationConfig: genConf,
@@ -73,7 +81,20 @@ func GenerateImage() (dataResponse models.ResGenImageModel) {
 	return models
 }
 
-func ConvertDataToImage(data models.ResGenImageModel) bool {
+// data
+//
+//	data = models.ResGenImageModel{}
+//
+// savePath
+// directory / path that you use to save result, by default is "output" in your work directory
+//
+//	savePath = "path_directory"
+//
+// nameFile
+// name file for output name, by default is "output"
+//
+//	nameFile = "output_name"
+func ConvertDataToImage(data models.ResGenImageModel, savePath string, nameFile string) bool {
 	ext := getExt(data.Candidates[0].Content.Parts[1].InlineData.MimeType)
 	if ext == "" {
 		ext = "png"
@@ -83,11 +104,13 @@ func ConvertDataToImage(data models.ResGenImageModel) bool {
 	base64data := data.Candidates[0].Content.Parts[1].InlineData.Data
 	byteData, _ := base64.StdEncoding.DecodeString(base64data)
 
-	dirSave, _ := os.ReadDir("output/")
-	nameForImage := fmt.Sprintf("output/%v.%v", len(dirSave), ext)
-	if OutPut != "" {
-		nameForImage = "output/" + OutPut + "." + ext
+	if utils.NotExistPath(savePath) {
+		fmt.Println("create directory")
+		utils.CreatePath(savePath)
 	}
+
+	nameForImage := fmt.Sprintf("%v/%v%v.%v", savePath, nameFile, len(savePath), ext)
+
 	writeImageErr := ioutil.WriteFile(nameForImage, []byte(byteData), 0664)
 	if writeImageErr != nil {
 		// log.Fatal(writeImageErr)
