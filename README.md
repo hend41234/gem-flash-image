@@ -18,20 +18,20 @@ if you don't have an API KEY, you can create an API [here](https://aistudio.goog
 
 ## RUN
 * example
-```bash
+    ```bash
     ./gemCLI -p "generate image cat fly to the moon"
-```
-```bash
+    ```
+    ```bash
     ./gemCLI -p "generate image cat fly to the moon" -o output_name
-```
-```bash
+    ```
+    ```bash
     ./gemCLI -p "generate image cat fly to the moon" -o output_name -d directory_to_save
-```
-```bash
+    ```
+    ```bash
     ./gemCLI -p "generate image cat fly to the moon" -o output_name -d directory_to_save -c env_file
-```
+    ```
 * for more details
-```bash
-    ./gemCLI -h
-```
+    ```bash
+        ./gemCLI -h
+    ```
 
