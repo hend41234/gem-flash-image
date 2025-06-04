@@ -1,4 +1,6 @@
-module gemflashimage
+// module gemflashimage
+module github.com/hend41234/gem-flash-image
+
 
 go 1.22.2
 

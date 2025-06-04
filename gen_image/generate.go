@@ -6,13 +6,14 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"gemflashimage/models"
-	"gemflashimage/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"regexp"
+
+	"github.com/hend41234/gem-flash-image/models"
+	"github.com/hend41234/gem-flash-image/utils"
 )
 
 var Promt string = ""

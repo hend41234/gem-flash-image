@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	genimage "gemflashimage/gen_image"
-	"gemflashimage/utils"
+	genimage "github.com/hend41234/gem-flash-image/gen_image"
 	"io/ioutil"
 	"log"
+
+	"github.com/hend41234/gem-flash-image/utils"
 )
 
 var (
