@@ -1,4 +1,3 @@
-// module gemflashimage
 module github.com/hend41234/gem-flash-image
 
 
