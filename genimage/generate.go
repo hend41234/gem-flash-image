@@ -13,7 +13,7 @@ import (
 	"regexp"
 
 	"github.com/hend41234/gem-flash-image/models"
-	"github.com/hend41234/gem-flash-image/utils"
+	"github.com/hend41234/gem-flash-image/utilsfi"
 )
 
 var Promt string = ""
@@ -37,13 +37,17 @@ func InputPromts() {
 //
 // if you have the env file, you can use the utils.LoadConfig(envPath)
 //
+// in env file, using GEMINI_API_KEY for key.
+//
 // or you can using parameter apiKey.
+//
+//	'make sure the API KEY is CORRECT'
 func GenerateImage(apiKey ...string) (dataResponse models.ResGenImageModel) {
-	utils.Utils.BaseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent"
+	utilsfi.Utils.BaseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent"
 	if len(apiKey) > 0 {
-		utils.Utils.GeminiApiKey = apiKey[0]
+		utilsfi.Utils.GeminiApiKey = apiKey[0]
 	}
-	if utils.Utils.GeminiApiKey == "" {
+	if utilsfi.Utils.GeminiApiKey == "" {
 		log.Fatal("config is not valid, please check your config\nnote: if you not inputed the parameter apiKey in genimage.GenerateImage(), you need to use utils.LoadConfig(envPath)")
 	}
 
@@ -60,7 +64,7 @@ func GenerateImage(apiKey ...string) (dataResponse models.ResGenImageModel) {
 	}
 	byteModels, _ := json.Marshal(body)
 	//
-	url := utils.Utils.BaseURL + "?key=" + utils.Utils.GeminiApiKey
+	url := utilsfi.Utils.BaseURL + "?key=" + utilsfi.Utils.GeminiApiKey
 	// fmt.Println(url)
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(byteModels))
 	client := http.Client{}
@@ -69,6 +73,11 @@ func GenerateImage(apiKey ...string) (dataResponse models.ResGenImageModel) {
 		log.Fatal("error request :\n\t" + err.Error())
 	}
 	defer res.Body.Close()
+	{
+		if res.StatusCode != 200 {
+			log.Fatal("error : please check your authentication, API_KEY or something")
+		}
+	}
 	// readAll, _ := io.ReadAll(res.Body)
 	// fmt.Println(string(readAll))
 	//
@@ -96,19 +105,26 @@ func GenerateImage(apiKey ...string) (dataResponse models.ResGenImageModel) {
 //
 //	nameFile = "output_name"
 func ConvertDataToImage(data models.ResGenImageModel, savePath string, nameFile string) bool {
+
+	{
+		// x, _ := json.Marshal(data)
+		// fmt.Println(string(x))
+		// ext := data.Candidates[0].Content.Parts[1]
+		// fmt.Println(ext)
+
+	}
 	ext := getExt(data.Candidates[0].Content.Parts[1].InlineData.MimeType)
 	if ext == "" {
 		ext = "png"
 	}
-
 	// fileJson, _ := os.Open("res.json")
 	base64data := data.Candidates[0].Content.Parts[1].InlineData.Data
 	byteData, _ := base64.StdEncoding.DecodeString(base64data)
 
-	if utils.NotExistPath(savePath) {
-		fmt.Println("create directory")
-		utils.CreatePath(savePath)
-	}
+	// if utilsfi.NotExistPath(savePath) {
+	// 	fmt.Println("create directory")
+	// 	utilsfi.CreatePath(savePath)
+	// }
 
 	nameForImage := fmt.Sprintf("%v/%v%v.%v", savePath, nameFile, len(savePath), ext)
 
@@ -117,16 +133,22 @@ func ConvertDataToImage(data models.ResGenImageModel, savePath string, nameFile 
 		// log.Fatal(writeImageErr)
 		return false
 	}
-	fmt.Println("generate image successfully.\nsaved in : " + nameForImage)
+	// fmt.Println("generate image successfully.\nsaved in : " + nameForImage)
 	return true
 }
 
 func getExt(imageType string) string {
+	extProb := []string{"jpg", "jpeg", "png", "webp", "bmp", "tiff", "tif", "gif", "svg", "ico", "avif", "heif", "heic", "dds", "exr", "raw", "psd"}
+	for _, p := range extProb {
+		if imageType == p {
+			return p
+		}
+	}
 	re := regexp.MustCompile(`/([^/]+)`)
 	match := re.FindStringSubmatch(imageType)
 
 	if len(match) > 1 {
-		fmt.Println(match[1])
+		// fmt.Println(match[1])
 		return match[1] // Output: "png", "img", etc
 	} else {
 		fmt.Println("No match found")

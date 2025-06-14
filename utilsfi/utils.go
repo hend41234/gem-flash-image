@@ -1,4 +1,4 @@
-package utils
+package utilsfi
 
 import (
 	"fmt"
@@ -48,18 +48,19 @@ func InputGeminiApiKey() string {
 	}
 }
 
+// please use GEMINI_API_KEY for key of api key
 func LoadConfig(envPath string) {
 	_ = godotenv.Load(envPath)
 	// Utils = new(Utilization)
 	BaseURL := "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent"
 	// GemApiKey := inputGeminiApiKey()
-	GemApiKey := os.Getenv("API_KEY")
+	GemApiKey := os.Getenv("GEMINI_API_KEY")
 	if GemApiKey == "" {
 		log.Fatal("API_KEY not found, please setting config or use utils.Utils.GeminiApiKey")
 	}
 	Utils.GeminiApiKey = GemApiKey
 	Utils.BaseURL = BaseURL
-	env := fmt.Sprintf(`API_KEY="%v"`,
+	env := fmt.Sprintf(`GEMINI_API_KEY="%v"`,
 		GemApiKey,
 	)
 	writeErr := ioutil.WriteFile(".env", []byte(env), 0664)

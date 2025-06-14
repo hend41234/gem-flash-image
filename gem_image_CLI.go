@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	genimage "github.com/hend41234/gem-flash-image/gen_image"
 	"io/ioutil"
 	"log"
 
-	"github.com/hend41234/gem-flash-image/utils"
+	"github.com/hend41234/gem-flash-image/genimage"
+
+	"github.com/hend41234/gem-flash-image/utilsfi"
 )
 
 var (
@@ -50,10 +51,10 @@ func CLI() {
 }
 
 func checkConfig() {
-	utils.LoadConfig(Config)
-	if utils.Utils.GeminiApiKey == "" {
-		utils.Utils.GeminiApiKey = utils.InputGeminiApiKey()
-		utils.Utils.BaseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent"
+	utilsfi.LoadConfig(Config)
+	if utilsfi.Utils.GeminiApiKey == "" {
+		utilsfi.Utils.GeminiApiKey = utilsfi.InputGeminiApiKey()
+		utilsfi.Utils.BaseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent"
 
 		var saveConfig string
 		fmt.Println("save config [y/n]? ")
@@ -63,7 +64,7 @@ func checkConfig() {
 		}
 		env := fmt.Sprintf(`
 	API_KEY="%v"`,
-			utils.Utils.GeminiApiKey,
+			utilsfi.Utils.GeminiApiKey,
 		)
 		writeErr := ioutil.WriteFile(".env", []byte(env), 0664)
 		if writeErr != nil {

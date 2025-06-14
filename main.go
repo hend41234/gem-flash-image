@@ -1,15 +1,30 @@
 package main
 
+import (
+	"log"
+
+	"github.com/hend41234/gem-flash-image/genimage"
+	"github.com/hend41234/gem-flash-image/utilsfi"
+)
+
 func main() {
 	// sample usage CLI
-	CLI()
+	// CLI()
 
-	// sample usage
-	// genimage.Promt = "buatkan saya gambar anak kucing lucu dan menggemaskan, dan satu iblis. iblis tersebut sedang mengemban anak kucing tersebut dengan tangan kiri, tangan yang satunya mengelus kepala anak kucing tersebut, "
-	// utils.LoadConfig(".env")
-	// newGen := genimage.GenerateImage()
-	// ok := genimage.ConvertDataToImage(newGen, "test_output", "testing_image")
-	// if !ok {
-	// log.Println("gagal")
-	// }
+	// sample usage in your code
+	UseInYourCode()
+}
+
+func UseInYourCode() {
+	// input prompt
+	genimage.Promt = "create the picture the one person whos drinks"
+	// using env file for get GEMINI_API_KEY
+	utilsfi.LoadConfig(".env")
+	// or you input API KEY in your code
+	// newGen := genimage.GenerateImage("GEMINI_API_KEY")
+	newGen := genimage.GenerateImage()
+
+	if ok := genimage.ConvertDataToImage(newGen, "test_output", "person_drinking"); !ok {
+		log.Fatal("error generate image")
+	}
 }
