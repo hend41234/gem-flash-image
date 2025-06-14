@@ -2,7 +2,6 @@ package utilsfi
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -60,11 +59,12 @@ func LoadConfig(envPath string) {
 	}
 	Utils.GeminiApiKey = GemApiKey
 	Utils.BaseURL = BaseURL
-	env := fmt.Sprintf(`GEMINI_API_KEY="%v"`,
-		GemApiKey,
-	)
-	writeErr := ioutil.WriteFile(".env", []byte(env), 0664)
-	if writeErr != nil {
-		log.Fatal("write env file Error :\n\t" + writeErr.Error())
-	}
+
+	// env := fmt.Sprintf(`GEMINI_API_KEY="%v"`,
+	// GemApiKey,
+	// )
+	// writeErr := ioutil.WriteFile(".env", []byte(env), 0664)
+	// if writeErr != nil {
+	// log.Fatal("write env file Error :\n\t" + writeErr.Error())
+	// }
 }
